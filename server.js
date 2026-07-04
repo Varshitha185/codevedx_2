@@ -1,3 +1,4 @@
+const path = require("path");
 const quizRoutes = require("./routes/quizRoutes");
 const express = require("express");
 const mongoose = require("mongoose");
@@ -8,6 +9,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(__dirname, "public")));
 app.use("/api/quizzes", quizRoutes);
 
 mongoose.connect(process.env.MONGO_URI)
