@@ -1,3 +1,4 @@
+let userAnswers = [];
 let currentQuestionIndex = 0;
 let score = 0;
 let currentQuiz;
@@ -23,21 +24,7 @@ async function loadQuiz() {
 
     showQuestion();
 
-    questionContainer.innerHTML = `
-        <h2>${firstQuestion.question}</h2>
-
-        ${firstQuestion.options.map(option => `
-            <div>
-                <input
-                    type="radio"
-                    name="answer"
-                    value="${option}"
-                >
-
-                ${option}
-            </div>
-        `).join("")}
-    `;
+    
 }
 
 function showQuestion() {
@@ -89,12 +76,14 @@ function nextQuestion() {
     const currentQuestion =
         currentQuiz.questions[currentQuestionIndex];
 
-    if (
-        selected.value ===
-        currentQuestion.correctAnswer
-    ) {
-        score++;
-    }
+    userAnswers.push(selected.value);
+
+if (
+    selected.value ===
+    currentQuestion.correctAnswer
+) {
+    score++;
+}
 
     currentQuestionIndex++;
 
@@ -107,18 +96,124 @@ function nextQuestion() {
 
     } else {
 
-        document.getElementById(
-            "questionContainer"
-        ).innerHTML = `
-            <h2>Quiz Completed!</h2>
-
-            <h3>
-                Your Score:
-                ${score} /
-                ${currentQuiz.questions.length}
-            </h3>
-        `;
+        showResults();
     }
+}
+
+function showResults() {
+    window.scrollTo({
+        top: 0,
+        behavior: "instant"
+    });
+
+    const percentage =
+        Math.round(
+            (score / currentQuiz.questions.length) * 100
+        );
+
+    let reviewHTML = "";
+
+    currentQuiz.questions.forEach((question, index) => {
+
+        const userAnswer =
+            userAnswers[index];
+
+        const isCorrect =
+            userAnswer ===
+            question.correctAnswer;
+
+        let optionsHTML = "";
+
+        question.options.forEach(option => {
+
+            let className = "";
+
+            if (
+                option === userAnswer &&
+                isCorrect
+            ) {
+                className = "correct";
+            }
+
+            else if (
+                option === userAnswer &&
+                !isCorrect
+            ) {
+                className = "wrong";
+            }
+
+            else if (
+                option === question.correctAnswer
+            ) {
+                className = "correct";
+            }
+
+            optionsHTML += `
+                <p class="${className}">
+                    ${option}
+                </p>
+            `;
+        });
+
+        reviewHTML += `
+            <div class="review-card">
+
+                <h3>
+                    ${index + 1}. ${question.question}
+                </h3>
+
+                ${optionsHTML}
+
+            </div>
+        `;
+    });
+
+    document.getElementById(
+        "questionContainer"
+    ).innerHTML = `
+
+        <div class="progress-circle">
+
+    <svg width="220" height="220">
+
+        <circle
+            cx="110"
+            cy="110"
+            r="90"
+            class="bg-circle"
+        ></circle>
+
+        <circle
+            cx="110"
+            cy="110"
+            r="90"
+            class="progress-ring"
+            style="
+                stroke-dashoffset:
+                ${565 - (565 * percentage / 100)}px
+            "
+        ></circle>
+
+    </svg>
+
+    <div class="percentage">
+        ${percentage}%
+    </div>
+
+</div>
+
+<h2>
+    Score:
+    ${score}
+    /
+    ${currentQuiz.questions.length}
+</h2>
+
+${reviewHTML}
+
+</div>
+
+    `;
 }
 
 loadQuiz();
