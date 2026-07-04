@@ -74,3 +74,13 @@ input{
 h3{
     color:#cbd5e1;
 }
+
+.quiz-card{
+    background:#1e293b;
+
+    padding:20px;
+
+    margin:15px;
+
+    border-radius:12px;
+}
