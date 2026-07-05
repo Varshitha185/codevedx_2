@@ -35,19 +35,39 @@ function showQuestion() {
     const questionContainer =
         document.getElementById("questionContainer");
 
+        const progress =
+    ((currentQuestionIndex + 1) /
+    currentQuiz.questions.length) * 100;
+
+document.getElementById(
+    "progressBar"
+).style.width = `${progress}%`;
+
+document.getElementById(
+    "progressText"
+).innerText =
+    `Question ${
+        currentQuestionIndex + 1
+    } of ${
+        currentQuiz.questions.length
+    }`;
+
     questionContainer.innerHTML = `
         <h2>${question.question}</h2>
 
-        ${question.options.map(option => `
-            <div>
-                <input
-                    type="radio"
-                    name="answer"
-                    value="${option}"
-                >
-                ${option}
-            </div>
-        `).join("")}
+      ${question.options.map(option => `
+    <label class="option-card">
+
+        <input
+            type="radio"
+            name="answer"
+            value="${option}"
+        >
+
+        <span>${option}</span>
+
+    </label>
+`).join("")}
 
         <br>
 
@@ -57,6 +77,36 @@ function showQuestion() {
                 : "Next"}
         </button>
     `;
+    document.querySelectorAll(
+        '.option-card input'
+    ).forEach(input => {
+
+        input.addEventListener(
+            'change',
+            function() {
+
+                document
+                .querySelectorAll(
+                    '.option-card'
+                )
+                .forEach(card => {
+
+                    card.classList.remove(
+                        'selected'
+                    );
+
+                });
+
+                this.closest(
+                    '.option-card'
+                ).classList.add(
+                    'selected'
+                );
+
+            }
+        );
+
+    });
 }
 
 function nextQuestion() {
@@ -101,6 +151,15 @@ if (
 }
 
 function showResults() {
+
+    document.getElementById(
+        "progressWrapper"
+    ).style.display = "none";
+
+    document.getElementById(
+        "progressText"
+    ).style.display = "none";
+
     window.scrollTo({
         top: 0,
         behavior: "instant"
@@ -110,6 +169,105 @@ function showResults() {
         Math.round(
             (score / currentQuiz.questions.length) * 100
         );
+
+    let performanceMessage = "";
+
+    if (percentage === 100) {
+        performanceMessage =
+            "🏆 Perfect Score!";
+    }
+
+    else if (percentage >= 80) {
+        performanceMessage =
+            "🎉 Excellent Work!";
+    }
+
+    else if (percentage >= 60) {
+        performanceMessage =
+            "📚 Good Job!";
+    }
+
+    else if (percentage >= 40) {
+        performanceMessage =
+            "👍 Nice Try!";
+    }
+
+    else {
+        performanceMessage =
+            "💪 Keep Practicing!";
+    }
+
+    document.getElementById(
+        "questionContainer"
+    ).innerHTML = `
+
+        <div class="result-container">
+
+            <div class="progress-circle">
+
+                <svg width="170" height="170">
+
+                    <circle
+                        cx="85"
+                        cy="85"
+                        r="65"
+                        class="bg-circle"
+                    ></circle>
+
+                    <circle
+                        cx="85"
+                        cy="85"
+                        r="65"
+                        class="progress-ring"
+                        style="
+                        stroke-dashoffset:
+                        ${
+                            565 -
+                            (565 * percentage / 100)
+                        }px"
+                    ></circle>
+
+                </svg>
+
+                <div class="percentage">
+                    ${percentage}%
+                </div>
+
+            </div>
+
+            <h2>${performanceMessage}</h2>
+
+            <h3>
+                Score:
+                ${score}
+                /
+                ${currentQuiz.questions.length}
+            </h3>
+
+            <div class="result-buttons">
+
+                <button onclick="location.reload()">
+                    Retake Quiz
+                </button>
+
+                <button onclick="
+                    window.location.href='takeQuiz.html'
+                ">
+                    Back To Quizzes
+                </button>
+
+                <button onclick="showReview()">
+                    Review Answers
+                </button>
+
+            </div>
+
+        </div>
+
+    `;
+}
+
+function showReview() {
 
     let reviewHTML = "";
 
@@ -170,50 +328,7 @@ function showResults() {
 
     document.getElementById(
         "questionContainer"
-    ).innerHTML = `
-
-        <div class="progress-circle">
-
-    <svg width="220" height="220">
-
-        <circle
-            cx="110"
-            cy="110"
-            r="90"
-            class="bg-circle"
-        ></circle>
-
-        <circle
-            cx="110"
-            cy="110"
-            r="90"
-            class="progress-ring"
-            style="
-                stroke-dashoffset:
-                ${565 - (565 * percentage / 100)}px
-            "
-        ></circle>
-
-    </svg>
-
-    <div class="percentage">
-        ${percentage}%
-    </div>
-
-</div>
-
-<h2>
-    Score:
-    ${score}
-    /
-    ${currentQuiz.questions.length}
-</h2>
-
-${reviewHTML}
-
-</div>
-
-    `;
+    ).innerHTML = reviewHTML;
 }
 
 loadQuiz();
