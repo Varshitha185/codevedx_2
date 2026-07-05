@@ -61,3 +61,66 @@ async function saveQuiz() {
 
     console.log(data);
 }
+
+async function loadCreatedQuizzes() {
+
+    const response =
+        await fetch("/api/quizzes");
+
+    const quizzes =
+        await response.json();
+
+    const container =
+        document.getElementById(
+            "createdQuizzes"
+        );
+
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    quizzes.forEach(quiz => {
+
+        container.innerHTML += `
+
+    <div class="quiz-card">
+
+        <h3>${quiz.title}</h3>
+
+        <p>
+            ${quiz.questions.length}
+            Questions
+        </p>
+
+        <button
+            class="delete-btn"
+            onclick="deleteCreatedQuiz('${quiz._id}')"
+        >
+            Delete
+        </button>
+
+    </div>
+
+`;
+    });
+}
+loadCreatedQuizzes();
+
+async function deleteCreatedQuiz(id){
+
+    const confirmDelete =
+        confirm("Delete this quiz?");
+
+    if(!confirmDelete){
+        return;
+    }
+
+    await fetch(
+        `/api/quizzes/${id}`,
+        {
+            method:"DELETE"
+        }
+    );
+
+    loadCreatedQuizzes();
+}

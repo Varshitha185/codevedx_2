@@ -390,3 +390,13 @@ input{
     max-width:750px;
     margin:auto;
 }
+
+.home-btn{
+    margin-top:20px;
+}
+
+.home-button-container{
+    display:flex;
+    justify-content:center;
+    margin-bottom:20px;
+}

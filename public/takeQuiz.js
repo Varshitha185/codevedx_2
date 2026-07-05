@@ -60,4 +60,11 @@ async function deleteQuiz(id) {
     loadQuizzes();
 }
 
+function goHome() {
+
+    window.location.href =
+        "index.html";
+
+}
+
 loadQuizzes();
