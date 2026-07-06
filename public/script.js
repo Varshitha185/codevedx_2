@@ -1,4 +1,5 @@
 let questions = [];
+let editQuizId = null;
 
 function addQuestion() {
 
@@ -37,29 +38,70 @@ function addQuestion() {
 async function saveQuiz() {
 
     const title =
-        document.getElementById("quizTitle").value;
+        document.getElementById(
+            "quizTitle"
+        ).value;
 
-    const response = await fetch(
-        "/api/quizzes",
-        {
-            method: "POST",
+    let url =
+        "/api/quizzes";
 
-            headers: {
-                "Content-Type": "application/json"
-            },
+    let method =
+        "POST";
 
-            body: JSON.stringify({
-                title,
-                questions
-            })
-        }
+    if(editQuizId){
+
+        url =
+            `/api/quizzes/${editQuizId}`;
+
+        method =
+            "PUT";
+    }
+
+    const response =
+        await fetch(
+            url,
+            {
+                method,
+
+                headers:{
+                    "Content-Type":
+                    "application/json"
+                },
+
+                body: JSON.stringify({
+                    title,
+                    questions
+                })
+            }
+        );
+
+    await response.json();
+
+    alert(
+        editQuizId
+        ? "Quiz Updated!"
+        : "Quiz Saved!"
     );
 
-    const data = await response.json();
+    editQuizId = null;
 
-    alert("Quiz Saved Successfully!");
+    questions = [];
 
-    console.log(data);
+    document.getElementById(
+        "quizTitle"
+    ).value = "";
+
+    document.getElementById(
+        "questionCount"
+    ).innerText =
+        "Questions Added: 0";
+
+    document.querySelector(
+        'button[onclick="saveQuiz()"]'
+    ).innerText =
+        "Save Quiz";
+
+    loadCreatedQuizzes();
 }
 
 async function loadCreatedQuizzes() {
@@ -93,11 +135,17 @@ async function loadCreatedQuizzes() {
         </p>
 
         <button
-            class="delete-btn"
-            onclick="deleteCreatedQuiz('${quiz._id}')"
-        >
-            Delete
-        </button>
+    onclick="editQuiz('${quiz._id}')"
+>
+    Update
+</button>
+
+<button
+    class="delete-btn"
+    onclick="deleteCreatedQuiz('${quiz._id}')"
+>
+    Delete
+</button>
 
     </div>
 
@@ -123,4 +171,44 @@ async function deleteCreatedQuiz(id){
     );
 
     loadCreatedQuizzes();
+}
+
+async function editQuiz(id){
+
+    const response =
+        await fetch(`/api/quizzes`);
+
+    const quizzes =
+        await response.json();
+
+    const quiz =
+        quizzes.find(q => q._id === id);
+
+    editQuizId = id;
+
+    document.getElementById(
+        "quizTitle"
+    ).value = quiz.title;
+
+    questions = quiz.questions;
+
+    document.getElementById(
+        "questionCount"
+    ).innerText =
+        `Questions Added: ${questions.length}`;
+
+    document.querySelector(
+        'button[onclick="saveQuiz()"]'
+    ).innerText =
+        "Update Quiz";
+
+        window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+});
+
+alert(
+    "Quiz loaded. Edit the title, add/remove questions, then click Update Quiz."
+);
+
 }
