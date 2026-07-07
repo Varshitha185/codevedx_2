@@ -248,19 +248,17 @@ input{
 /* ===== REVIEW CARDS ===== */
 
 .review-card{
+    background:#1e293b;
 
-    background:#2d2a26;
+    padding:12px;
 
-    padding:15px;
-    margin:12px auto;
+    margin:10px;
 
-    border-radius:20px;
+    border-radius:10px;
 
     text-align:left;
-
-    max-width:700px;
+    max-width:500px;
 }
-
 
 /* ===== ANSWER COLORS ===== */
 
@@ -399,4 +397,9 @@ input{
     display:flex;
     justify-content:center;
     margin-bottom:20px;
+}
+.container{
+    width: 80%;
+    max-width: 900px;
+    margin: auto;
 }

@@ -23,11 +23,6 @@ async function loadQuizzes() {
     Start Quiz
 </button>
 
-<button
-    onclick="deleteQuiz('${quiz._id}')"
->
-    Delete
-</button>
     </div>
 `;
     });

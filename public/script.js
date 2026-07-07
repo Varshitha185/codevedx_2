@@ -73,6 +73,15 @@ console.log(
             "Question Updated!"
         );
 
+        document.getElementById(
+    "editingStatus"
+).innerText = "";
+
+document.querySelector(
+    'button[onclick="addQuestion()"]'
+).innerText =
+    "Add Question";
+
     } else {
 
         questions.push(
@@ -355,9 +364,16 @@ function loadQuestionForEdit(index) {
     console.log("Edit clicked", index);
     editingQuestionIndex = index;
 
-    document.querySelector(
-    'button[onclick="addQuestion()"]'
-).innerText = "Update Question";
+     document.getElementById(
+        "editingStatus"
+    ).innerText =
+        `✏️ Editing Question ${index + 1}`;
+
+
+     document.querySelector(
+        'button[onclick="addQuestion()"]'
+    ).innerText =
+        "Save Changes";
 
     const q =
         questions[index];
