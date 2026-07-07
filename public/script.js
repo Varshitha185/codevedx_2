@@ -1,38 +1,123 @@
 let questions = [];
 let editQuizId = null;
+let editingQuestionIndex = null;
 
 function addQuestion() {
 
-    const question = document.getElementById("question").value;
+    const question =
+        document.getElementById(
+            "question"
+        ).value;
 
-    const option1 = document.getElementById("option1").value;
-    const option2 = document.getElementById("option2").value;
-    const option3 = document.getElementById("option3").value;
-    const option4 = document.getElementById("option4").value;
+    const option1 =
+        document.getElementById(
+            "option1"
+        ).value;
+
+    const option2 =
+        document.getElementById(
+            "option2"
+        ).value;
+
+    const option3 =
+        document.getElementById(
+            "option3"
+        ).value;
+
+    const option4 =
+        document.getElementById(
+            "option4"
+        ).value;
 
     const correctAnswer =
-        document.getElementById("correctAnswer").value;
+        document.getElementById(
+            "correctAnswer"
+        ).value;
 
-    questions.push({
+    const questionData = {
+
         question,
+
         options: [
             option1,
             option2,
             option3,
             option4
         ],
+
         correctAnswer
-    });
+    };
 
-    document.getElementById("questionCount").innerText =
-        `Questions Added: ${questions.length}`;
+    console.log(
+    "editingQuestionIndex:",
+    editingQuestionIndex
+);
 
-    document.getElementById("question").value = "";
-    document.getElementById("option1").value = "";
-    document.getElementById("option2").value = "";
-    document.getElementById("option3").value = "";
-    document.getElementById("option4").value = "";
-    document.getElementById("correctAnswer").value = "";
+console.log(
+    "Before update:",
+    questions
+);
+
+    if (
+        editingQuestionIndex !== null
+    ) {
+
+        questions[
+            editingQuestionIndex
+        ] = questionData;
+
+        editingQuestionIndex =
+            null;
+
+        alert(
+            "Question Updated!"
+        );
+
+    } else {
+
+        questions.push(
+            questionData
+        );
+    }
+    console.log(
+    "After update:",
+    questions
+);
+document.querySelector(
+    'button[onclick="addQuestion()"]'
+).innerText = "Add Question";
+
+    document.getElementById(
+        "questionCount"
+    ).innerText =
+        `Questions Added:
+        ${questions.length}`;
+
+    displayQuestionsForEditing();
+
+    document.getElementById(
+        "question"
+    ).value = "";
+
+    document.getElementById(
+        "option1"
+    ).value = "";
+
+    document.getElementById(
+        "option2"
+    ).value = "";
+
+    document.getElementById(
+        "option3"
+    ).value = "";
+
+    document.getElementById(
+        "option4"
+    ).value = "";
+
+    document.getElementById(
+        "correctAnswer"
+    ).value = "";
 }
 
 async function saveQuiz() {
@@ -57,6 +142,9 @@ async function saveQuiz() {
             "PUT";
     }
 
+    console.log("Sending to DB:");
+console.log(questions);
+
     const response =
         await fetch(
             url,
@@ -75,7 +163,9 @@ async function saveQuiz() {
             }
         );
 
-    await response.json();
+    const result = await response.text();
+
+console.log(result);
 
     alert(
         editQuizId
@@ -210,5 +300,111 @@ async function editQuiz(id){
 alert(
     "Quiz loaded. Edit the title, add/remove questions, then click Update Quiz."
 );
+displayQuestionsForEditing();
 
+window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+}); 
+}
+
+function displayQuestionsForEditing() {
+
+    const editor =
+        document.getElementById(
+            "questionEditor"
+        );
+
+    editor.innerHTML = "";
+
+    questions.forEach(
+        (question, index) => {
+
+        editor.innerHTML += `
+
+            <div class="review-card">
+
+                <h3>
+                    Question ${index + 1}
+                </h3>
+
+                <p>
+                    ${question.question}
+                </p>
+
+                <p>
+                    Correct:
+                    ${question.correctAnswer}
+                </p>
+
+                <button onclick="loadQuestionForEdit(${index})">
+    Edit
+</button>
+
+                <button onclick="deleteQuestion(${index})">
+    Delete
+</button>
+
+            </div>
+
+        `;
+    });
+}
+
+function loadQuestionForEdit(index) {
+    console.log("Edit clicked", index);
+    editingQuestionIndex = index;
+
+    document.querySelector(
+    'button[onclick="addQuestion()"]'
+).innerText = "Update Question";
+
+    const q =
+        questions[index];
+
+    document.getElementById(
+        "question"
+    ).value =
+        q.question;
+
+    document.getElementById(
+        "option1"
+    ).value =
+        q.options[0];
+
+    document.getElementById(
+        "option2"
+    ).value =
+        q.options[1];
+
+    document.getElementById(
+        "option3"
+    ).value =
+        q.options[2];
+
+    document.getElementById(
+        "option4"
+    ).value =
+        q.options[3];
+
+    document.getElementById(
+        "correctAnswer"
+    ).value =
+        q.correctAnswer;
+}
+
+function deleteQuestion(index){
+
+    questions.splice(
+        index,
+        1
+    );
+
+    displayQuestionsForEditing();
+
+    document.getElementById(
+        "questionCount"
+    ).innerText =
+        `Questions Added:
+        ${questions.length}`;
 }
