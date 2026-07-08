@@ -1,4 +1,4 @@
-**Quiz Maker**
+**Quiz Maker (Live Deployed Project)**
 
 A full-stack Quiz Maker application built using Node.js, Express.js, MongoDB Atlas, HTML, CSS, and JavaScript.
 
