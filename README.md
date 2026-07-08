@@ -2,6 +2,14 @@
 
 A full-stack Quiz Maker application built using Node.js, Express.js, MongoDB Atlas, HTML, CSS, and JavaScript.
 
+**Live Demo**
+
+🔗 https://quizmaker-mts3.onrender.com
+
+**GitHub Repository**
+
+🔗 https://github.com/Varshitha185/codevedx_QuizMaker
+
 **Features**
 
 - Create quizzes
@@ -14,48 +22,3 @@ A full-stack Quiz Maker application built using Node.js, Express.js, MongoDB Atl
 - View score and results
 - Review answers
 - MongoDB database integration
-
-**Technologies Used**
-
-- Node.js
-- Express.js
-- MongoDB Atlas
-- HTML
-- CSS
-- JavaScript
-
-**Installation**
-
-1. Clone the repository
-
-```bash
-git clone <repository-url>
-```
-
-2. Install dependencies
-
-```bash
-npm install
-```
-
-3. Create a `.env` file
-
-```env
-MONGO_URI=your_mongodb_connection_string
-```
-
-4. Start the server
-
-```bash
-npm run dev
-```
-
-5. Open:
-
-```
-http://localhost:5000
-```
-
-Author
-
-Varshitha C
